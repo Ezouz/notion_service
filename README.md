@@ -6,6 +6,7 @@ https://github.com/makenotion/notion-sdk-js
 
 Documentation partie go:
 https://pkg.go.dev/github.com/dstotijn/go-notion
+https://pkg.go.dev/github.com/dstotijn/go-notion#section-readme
 
 #Partie script
 

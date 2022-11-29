@@ -1,8 +1,11 @@
 package notion
 
 import (
+	"context"
+	"log"
 	"sync"
 
+	"gitlab.42paris.fr/notion_service/ent"
 	"gitlab.42paris.fr/notion_service/pkg/methods"
 	"gitlab.42paris.fr/notion_service/pkg/models"
 )
@@ -13,14 +16,13 @@ type Databases struct {
 	err     error
 }
 
-func DBChangeChecker(DBList *[]models.ProcessDB) {
-	// log.Printf("toCheck : %v", DBList)
+func DBChangeChecker(DBList *[]models.ProcessDB, client *ent.Client) {
 
+	// with goroutines
 	var wg sync.WaitGroup
 	content := make(chan Databases, 300) // Declare a unbuffered channel
 	var databases []Databases
 
-	// with goroutines
 	// get db in notion
 	for _, db := range *DBList {
 		// Increment the WaitGroup counter.
@@ -39,13 +41,42 @@ func DBChangeChecker(DBList *[]models.ProcessDB) {
 		databases = append(databases, <-content)
 	}
 
-	// log.Printf("databases: %v", databases)
 	wg.Wait()
 	// finished writing on channel
 	defer close(content)
 
 	// get db in postgres and values to compare (database_id, property type)
-	// check content change if one of the two sets of data is ["down", "deprecated", "maintenance", "done"]
+
+	for _, db := range *DBList {
+		log.Printf("db: %v", db)
+
+		// get existing Status data
+		DB, err := client.Status.Query().All(context.Background())
+		if err != nil {
+			log.Fatalf("failed fetching Status: %v", err)
+		}
+		log.Printf("status: %v", DB)
+		// 	Query().
+		// 	Where()
+	}
+
+	// newDB, err := client.Database.
+	// Create().
+
+	// if object in databases is archived false else delete
+
+	// compare 2 values per row_id
+
+	// if one of the two sets of data is referenced in the ProcessProperty.Values Array
+
 	// save new values if changed (database_id, property type)
 	// post email or discord message with change
+	defer client.Close()
+
 }
+
+// Set field value.
+// Avoid nil checks.
+// Add many edges.
+// Set unique edge.
+// Create and return.
