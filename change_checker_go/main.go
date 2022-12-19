@@ -8,9 +8,9 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/joho/godotenv"
 
+	"gitlab.42paris.fr/notion_service/internal/models"
+	"gitlab.42paris.fr/notion_service/internal/notion"
 	"gitlab.42paris.fr/notion_service/pkg/controllers"
-	"gitlab.42paris.fr/notion_service/pkg/models"
-	"gitlab.42paris.fr/notion_service/pkg/notion"
 )
 
 func main() {
@@ -32,16 +32,16 @@ func main() {
 			},
 			Notify: os.Getenv("ZOUZ_MAIL"),
 		},
-		// {
-		// 	ID:     os.Getenv("DB_TEST"),
-		// 	Check:  []string{"status"},
-		// 	Notify: os.Getenv("ZOUZ_MAIL"),
-		// },
-		// {
-		// 	ID:     os.Getenv("DB_TEST"),
-		// 	Check:  []string{"status"},
-		// 	Notify: os.Getenv("ZOUZ_MAIL"),
-		// },
+		{
+			ID: os.Getenv("DB_TEST"),
+			Check: []models.ProcessProperty{
+				{
+					Type:   "status",
+					Values: []string{"complete", "Done"},
+				},
+			},
+			Notify: os.Getenv("ZOUZ_MAIL"),
+		},
 	}
 	// open connection with db
 	client := controllers.PostgresClient()
@@ -59,6 +59,8 @@ func main() {
 		// See the godoc for other configuration options
 	})
 
+	// TODO schedule task change checker / https://github.com/hibiken/asynq
+	// mux.HandleFunc(tasks.TypeEmailDelivery, tasks.HandleEmailDeliveryTask)
 	notion.DBChangeChecker(&toCheck, client)
 
 	mux := asynq.NewServeMux()

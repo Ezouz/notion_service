@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"gitlab.42paris.fr/notion_service/ent"
+	"gitlab.42paris.fr/notion_service/internal/models"
 	"gitlab.42paris.fr/notion_service/pkg/methods"
-	"gitlab.42paris.fr/notion_service/pkg/models"
 )
 
 type Databases struct {
@@ -46,26 +46,42 @@ func DBChangeChecker(DBList *[]models.ProcessDB, client *ent.Client) {
 	defer close(content)
 
 	// get db in postgres and values to compare (database_id, property type)
+	var statusList []*ent.Status
 
 	for _, db := range *DBList {
 		log.Printf("db: %v", db)
 
 		// get existing Status data
-		DB, err := client.Status.Query().All(context.Background())
-		if err != nil {
-			log.Fatalf("failed fetching Status: %v", err)
+		for _, toCheck := range db.Check {
+			if (toCheck.Type == "status") && (len(statusList) == 0) {
+				DB, err := client.Status.Query().All(context.Background())
+				if err != nil {
+					log.Fatalf("failed fetching Status: %v", err)
+				}
+				statusList = DB
+
+			}
 		}
-		log.Printf("status: %v", DB)
-		// 	Query().
-		// 	Where()
+	}
+
+	// compare 2 values per row_id
+	log.Printf("status: %v", statusList)
+
+	for _, db := range *DBList {
+		log.Printf("db: %v", db)
+
+		// get existing Status data
+		for _, toCheck := range db.Check {
+			if (toCheck.Type == "status") && (len(statusList) == 0) {
+
+			}
+		}
 	}
 
 	// newDB, err := client.Database.
 	// Create().
 
 	// if object in databases is archived false else delete
-
-	// compare 2 values per row_id
 
 	// if one of the two sets of data is referenced in the ProcessProperty.Values Array
 

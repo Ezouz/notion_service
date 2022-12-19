@@ -32,8 +32,16 @@ network.create:
 	$(DOCKER) network create $(NETWORK)
 network.remove:
 	$(DOCKER) network remove $(NETWORK)
-air.init:
+
+validate:
 	$(DOCKER) run --rm \
-		--volume $(shell pwd):/go/src/gitlab.42paris.fr/notion_service \
+		--volume $(shell pwd)/change_checker_go:/go/src/gitlab.42paris.fr/notion_service \
 		--workdir /go/src/gitlab.42paris.fr/notion_service \
-		cosmtrek/air init
+		quay.io/goswagger/swagger validate ./gen/swagger.yml
+
+gen:
+	rm -frv ./change_checker_go/pkg/models ./change_checker_go/pkg/api/operations
+	$(DOCKER) run --rm \
+		--volume $(shell pwd)/change_checker_go:/go/src/gitlab.42paris.fr/notion_service \
+		--workdir /go/src/gitlab.42paris.fr/notion_service \
+		quay.io/goswagger/swagger generate server --name $(NAME) --spec ./gen/swagger.yml --target ./pkg --main-package=../../cmd/notion-server/

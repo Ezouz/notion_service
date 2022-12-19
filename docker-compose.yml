@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:6.2.4
     ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
+      - "7776:${REDIS_PORT}"
     volumes:
       - ./redisdata:/data
 
@@ -13,17 +13,30 @@ services:
     env_file:
       - .env
     ports:
-      - "6543:${POSTGRES_PORT}"
+      - "7777:${POSTGRES_PORT}"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
-  api:
+  db_checker:
     build:
       dockerfile: ./change_checker_go/deploy/Dockerfile
       context: ./
     depends_on:
       - database
       - redis
+    env_file:
+      - .env
+    # ports:
+    #   - "${API_PORT}:${API_PORT}"
+    volumes:
+      - go_cache:/go/pkg/mod
+
+  api:
+    build:
+      dockerfile: ./change_checker_go/deploy/Dockerfile.api
+      context: ./
+    depends_on:
+      - database
     env_file:
       - .env
     ports:

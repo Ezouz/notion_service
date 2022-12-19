@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
+	"gitlab.42paris.fr/notion_service/internal/models"
 	"gitlab.42paris.fr/notion_service/pkg/controllers"
-	"gitlab.42paris.fr/notion_service/pkg/models"
 )
 
 func FetchNotionDB(DBid string) (*models.CompleteDB, error) {
