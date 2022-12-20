@@ -4,17 +4,24 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/lib/pq"
 	"gitlab.42paris.fr/notion_service/ent"
 )
 
+type ConnString struct {
+	Host     string
+	DB       string
+	Port     string
+	Password string
+	User     string
+}
+
 // This function will make a connection to the database only once.
-func PostgresClient() *ent.Client {
+func PostgresClient(connstring ConnString) *ent.Client {
 	var err error
 
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB"))
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", connstring.Host, connstring.Port, connstring.User, connstring.Password, connstring.DB)
 	// "postgres://postgres:password@localhost/DB_1?sslmode=disable"
 	postgres, err := ent.Open("postgres", connStr)
 

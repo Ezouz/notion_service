@@ -44,7 +44,13 @@ func main() {
 		},
 	}
 	// open connection with db
-	client := controllers.PostgresClient()
+	client := controllers.PostgresClient(controllers.ConnString{
+		Host:     os.Getenv("POSTGRES_HOST"),
+		DB:       os.Getenv("POSTGRES_DB"),
+		Port:     os.Getenv("POSTGRES_PORT"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		User:     os.Getenv("POSTGRES_USER"),
+	})
 
 	redisClientOpt := asynq.RedisClientOpt{Addr: fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT"))}
 	srv := asynq.NewServer(redisClientOpt, asynq.Config{

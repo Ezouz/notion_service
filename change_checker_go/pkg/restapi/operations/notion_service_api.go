@@ -47,6 +47,13 @@ func NewNotionServiceAPI(spec *loads.Document) *NotionServiceAPI {
 		ClustersPostCheckhostHandler: clusters.PostCheckhostHandlerFunc(func(params clusters.PostCheckhostParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation clusters.PostCheckhost has not yet been implemented")
 		}),
+
+		// Applies when the "x-token" header is set
+		KeyAuth: func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+		},
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -82,6 +89,13 @@ type NotionServiceAPI struct {
 	// JSONProducer registers a producer for the following mime types:
 	//   - application/json
 	JSONProducer runtime.Producer
+
+	// KeyAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key x-token provided in the header
+	KeyAuth func(string) (interface{}, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
 
 	// ClustersPostCheckhostHandler sets the operation handler for the post checkhost operation
 	ClustersPostCheckhostHandler clusters.PostCheckhostHandler
@@ -162,6 +176,10 @@ func (o *NotionServiceAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.KeyAuth == nil {
+		unregistered = append(unregistered, "XTokenAuth")
+	}
+
 	if o.ClustersPostCheckhostHandler == nil {
 		unregistered = append(unregistered, "clusters.PostCheckhostHandler")
 	}
@@ -180,12 +198,21 @@ func (o *NotionServiceAPI) ServeErrorFor(operationID string) func(http.ResponseW
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *NotionServiceAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+		case "key":
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, o.KeyAuth)
+
+		}
+	}
+	return result
 }
 
 // Authorizer returns the registered authorizer
 func (o *NotionServiceAPI) Authorizer() runtime.Authorizer {
-	return nil
+	return o.APIAuthorizer
 }
 
 // ConsumersFor gets the consumers for the specified media types.

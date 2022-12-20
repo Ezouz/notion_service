@@ -3,18 +3,20 @@ info:
   description: API notion 42
   title: Notion API
   version: "0.0.1"
-# securityDefinitions:
-#   Bearer:
-#     type: apiKey
-#     name: Authorization
-#     in: header
+
+securityDefinitions:
+  key:
+    type: apiKey
+    name: x-token
+    in: header
+
 paths:
   /checkhost:
     post:
       tags:
         - clusters
       security:
-        - Bearer: []
+        - key: []
       consumes:
         - "application/json"
       parameters:
@@ -76,6 +78,8 @@ definitions:
       last_redump:
         type: string
         example: "lun. 19 déc. 2022 15:42:10 CET"
+  principal:
+    type: string
   ErrorResponse:
     type: object
     properties:

@@ -9,6 +9,8 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	apiHandler "gitlab.42paris.fr/notion_service/pkg/handlers"
+	"gitlab.42paris.fr/notion_service/pkg/utils"
 
 	"gitlab.42paris.fr/notion_service/pkg/restapi/operations"
 	"gitlab.42paris.fr/notion_service/pkg/restapi/operations/clusters"
@@ -38,6 +40,21 @@ func configureAPI(api *operations.NotionServiceAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	// Applies when the "x-token" header is set
+	api.KeyAuth = utils.ValidateHeader
+	if api.KeyAuth == nil {
+		api.KeyAuth = func(token string) (interface{}, error) {
+			return nil, errors.NotImplemented("api key auth (key) x-token from header param [x-token] has not yet been implemented")
+		}
+	}
+
+	// Set your custom authorizer if needed. Default one is security.Authorized()
+	// Expected interface runtime.Authorizer
+	//
+	// Example:
+	// api.APIAuthorizer = security.Authorized()
+
+	api.ClustersPostCheckhostHandler = &apiHandler.ClustersCheckhost{}
 	if api.ClustersPostCheckhostHandler == nil {
 		api.ClustersPostCheckhostHandler = clusters.PostCheckhostHandlerFunc(func(params clusters.PostCheckhostParams, principal interface{}) middleware.Responder {
 			return middleware.NotImplemented("operation clusters.PostCheckhost has not yet been implemented")

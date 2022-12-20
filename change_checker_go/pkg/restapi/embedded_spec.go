@@ -33,7 +33,7 @@ func init() {
       "post": {
         "security": [
           {
-            "Bearer": []
+            "key": []
           }
         ],
         "consumes": [
@@ -136,6 +136,16 @@ func init() {
           "example": "COUCOUJESUISUNSERIAL"
         }
       }
+    },
+    "principal": {
+      "type": "string"
+    }
+  },
+  "securityDefinitions": {
+    "key": {
+      "type": "apiKey",
+      "name": "x-token",
+      "in": "header"
     }
   }
 }`))
@@ -155,7 +165,7 @@ func init() {
       "post": {
         "security": [
           {
-            "Bearer": []
+            "key": []
           }
         ],
         "consumes": [
@@ -258,6 +268,16 @@ func init() {
           "example": "COUCOUJESUISUNSERIAL"
         }
       }
+    },
+    "principal": {
+      "type": "string"
+    }
+  },
+  "securityDefinitions": {
+    "key": {
+      "type": "apiKey",
+      "name": "x-token",
+      "in": "header"
     }
   }
 }`))

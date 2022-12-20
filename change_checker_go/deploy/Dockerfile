@@ -6,7 +6,7 @@ COPY ./change_checker_go /go/src/gitlab.42paris.fr/notion_service
 COPY .env /go/src/gitlab.42paris.fr/notion_service/.env
 WORKDIR /go/src/gitlab.42paris.fr/notion_service
 
-RUN go build -o /go/src/gitlab.42paris.fr/notion_service/tmp/change_checker /go/src/gitlab.42paris.fr/notion_service/.
+RUN go build -o /go/src/gitlab.42paris.fr/notion_service/tmp/change_checker /go/src/gitlab.42paris.fr/notion_service/cmd/db_change_checker/main.go
 
 FROM debian:11-slim
 

@@ -1,12 +1,12 @@
 version: "3.9"
 
 services:
-  redis:
-    image: redis:6.2.4
-    ports:
-      - "7776:${REDIS_PORT}"
-    volumes:
-      - ./redisdata:/data
+  # redis:
+  #   image: redis:6.2.4
+  #   ports:
+  #     - "7776:${REDIS_PORT}"
+  #   volumes:
+  #     - ./redisdata:/data
 
   database:
     image: postgres:13.2
@@ -17,26 +17,22 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
-  db_checker:
-    build:
-      dockerfile: ./change_checker_go/deploy/Dockerfile
-      context: ./
-    depends_on:
-      - database
-      - redis
-    env_file:
-      - .env
-    # ports:
-    #   - "${API_PORT}:${API_PORT}"
-    volumes:
-      - go_cache:/go/pkg/mod
+  # db_checker:
+  #   build:
+  #     dockerfile: ./change_checker_go/deploy/Dockerfile
+  #     context: ./
+  #   depends_on:
+  #     - database
+  #     - redis
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - go_cache:/go/pkg/mod
 
   api:
     build:
       dockerfile: ./change_checker_go/deploy/Dockerfile.api
       context: ./
-    depends_on:
-      - database
     env_file:
       - .env
     ports:
