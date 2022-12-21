@@ -1,10 +1,11 @@
 .vscode
 .env
 
-change_checker_js/node_modules
-change_checker_js/package-lock.json
+node_modules
+package-lock.json
 
-change_checker_go/notion_service
+notion_service
 
 postgres-data
-redisdata/
+redisdata
+tmp

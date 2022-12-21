@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:6.2.4
+    ports:
+      - "7776:${REDIS_PORT}"
+    volumes:
+      - ./redisdata:/data
+
+  database:
+    image: postgres:13.2
+    env_file:
+      - .env
+    ports:
+      - "7777:${POSTGRES_PORT}"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  db_checker:
+    build:
+      dockerfile: ./deploy/Dockerfile
+      context: ./
+    depends_on:
+      - database
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - go_cache:/go/pkg/mod
+
+  api:
+    build:
+      dockerfile: ./deploy/Dockerfile.api
+      context: ./
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+      - go_cache:/go/pkg/mod
+
+networks:
+  default:
+    external: true
+    name: notion_service
+
+volumes:
+  go_cache:

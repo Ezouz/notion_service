@@ -15,13 +15,16 @@ func FetchNotionDB(DBid string) (*models.CompleteDB, error) {
 	ctx := context.Background()
 
 	dbInfo, err := clientNotion.FindDatabaseByID(ctx, DBid)
+	// dbInfo, err := clientNotion.FindDatabaseByID(ctx, DBid)
 	if err != nil {
-		log.Fatalf("Error: %s", err.Error())
+		log.Printf("Error: %s", err.Error())
+		return nil, err
 	}
 
 	page, err := clientNotion.QueryDatabase(ctx, DBid, nil)
 	if err != nil {
-		log.Fatalf("Error: %s", err.Error())
+		log.Printf("Error: %s", err.Error())
+		return nil, err
 	}
 
 	CDB := new(models.CompleteDB)

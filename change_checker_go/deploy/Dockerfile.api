@@ -2,7 +2,7 @@ FROM golang:1.19.1 AS builder
 
 ENV CGO_ENABLED off
 
-COPY ./change_checker_go /go/src/gitlab.42paris.fr/notion_service
+COPY . /go/src/gitlab.42paris.fr/notion_service
 COPY .env /go/src/gitlab.42paris.fr/notion_service/.env
 WORKDIR /go/src/gitlab.42paris.fr/notion_service
 

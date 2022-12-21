@@ -16,5 +16,5 @@ func ValidateHeader(bearerHeader string) (interface{}, error) {
 		// return bearerHeader, nil
 	}
 
-	return nil, errors.New(401, "incorrect api key auth")
+	return nil, errors.New(401, "Incorrect API key")
 }

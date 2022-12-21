@@ -34,7 +34,7 @@ func configureAPI(api *operations.NotionServiceAPI) http.Handler {
 
 	api.UseSwaggerUI()
 	// To continue using redoc as your UI, uncomment the following line
-	// api.UseRedoc()
+	api.UseRedoc()
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
