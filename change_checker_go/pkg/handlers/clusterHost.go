@@ -5,10 +5,12 @@ import (
 	"os"
 	"reflect"
 
+	"github.com/dstotijn/go-notion"
 	"github.com/go-openapi/runtime/middleware"
 	"gitlab.42paris.fr/notion_service/pkg/methods"
 	"gitlab.42paris.fr/notion_service/pkg/models"
 	"gitlab.42paris.fr/notion_service/pkg/restapi/operations/clusters"
+	"gitlab.42paris.fr/notion_service/pkg/utils"
 )
 
 type ClustersCheckhost struct {
@@ -25,48 +27,49 @@ func (h *ClustersCheckhost) Handle(compDef clusters.PostCheckhostParams, token i
 	log.Printf("Serial ---------------------- %v", compDef.ClusterHost.Serial)
 	log.Printf("BiosDate ---------------------- %v", compDef.ClusterHost.BiosDate)
 	log.Printf("LastRedump ---------------------- %v", compDef.ClusterHost.LastRedump)
-	log.Printf("TEST ---------------------- %v", reflect.ValueOf(compDef.ClusterHost))
-	// values := reflect.ValueOf(compDef.ClusterHost)
-	// types := values.Type()
-	// if values.Kind() == reflect.Ptr {
-	// 	values = values.Elem()
-	// 	log.Printf("TEST ---------------------- %v", values)
-	// 	for i := 0; i < values.NumField(); i++ {
-	// 		log.Println(types.Field(i).Index[0], types.Field(i).Name, values.Field(i))
-	// 	}
 
-	// }
-
-	// getNotionDB
-	log.Printf("Cluster DB VLAUE: %s", os.Getenv("DB_CLUSTER"))
-	page, err := methods.FetchNotionDB(os.Getenv("DB_CLUSTER"))
+	// getNotionDB & Check if Hostname is here
+	row, err := utils.FindRowWithTitleInNotionDB(os.Getenv("DB_CLUSTER"), compDef.ClusterHost.Hostname, nil)
 	if err != nil {
-		log.Printf("Could not connect to Notion Cluster Database: %s", err)
 		return &clusters.PostCheckhostBadRequest{
-			Payload: &models.ErrorResponse{
-				Code:    500,
-				Message: "Bad Notion DB ID",
-			},
+			Payload: err,
 		}
 	}
-	log.Printf("Cluster DB: %v", reflect.ValueOf(page))
-	log.Printf("Cluster DB: %v", reflect.ValueOf(page))
-	log.Printf("Cluster DB: %v", reflect.ValueOf(page))
+	if row != nil {
+		// Update row if exists
+		// https://developers.notion.com/reference/patch-page
+		log.Printf("ROW ---------------------- %s /// %v", reflect.ValueOf(row), err)
 
-	// Check if Hostname is here
-	// if not create new
+	} else {
+		// or create new row // post page
+		log.Printf("ROW Does not exists")
+		// get template
+		template, err := methods.FetchNotionPage(os.Getenv("DB_CLUSTER_TEMPLATE"))
+		if err != nil {
+			return &clusters.PostCheckhostBadRequest{
+				Payload: &models.ErrorResponse{
+					Code:    404,
+					Message: "Template Page for new entry Not Found",
+				},
+			}
+		}
+		props, ok := template.Properties.(notion.DatabasePageProperties)
+		if ok == false {
+			log.Print("String Error")
+		}
+		// fill template properties
+		dbProps, err := utils.FillNotionPropertyFromTemplate(props, compDef.ClusterHost)
+		if err != nil {
+			log.Print("Props Error")
+		}
 
-	// methods.PostToNotionDB()
+		params := notion.CreatePageParams{
+			ParentType:             "database_id",
+			ParentID:               os.Getenv("DB_CLUSTER"),
+			DatabasePageProperties: &dbProps,
+		}
 
-	// Check All parameters are here
-	// if reflect.ValueOf(compDef.ClusterHost) != 8 {
-	// 	// if no error
-	// 	return &clusters.PostCheckhostBadRequest{
-	// 		Payload: &models.ErrorResponse{
-	// 			Code:    401,
-	// 			Message: "Bad Request",
-	// 		},
-	// 	}
-	// }
+		methods.PostToNotionDB(os.Getenv("DB_CLUSTER"), params)
+	}
 	return &clusters.PostCheckhostNoContent{}
 }

@@ -5,6 +5,6 @@ import (
 )
 
 type CompleteDB struct {
-	DB    notion.DatabaseQueryResponse
 	Infos notion.Database
+	DB    notion.DatabaseQueryResponse
 }

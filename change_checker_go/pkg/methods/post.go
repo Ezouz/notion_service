@@ -1,9 +1,23 @@
 package methods
 
-// post value to notion db
-func PostToNotionDB(keyType string, key string, value string, DBid string) (bool, error) {
-	// clientNotion := controllers.NotionClient()
-	// ctx := context.Background()
+import (
+	"context"
+	"log"
 
-	return true, nil
+	"github.com/dstotijn/go-notion"
+	"gitlab.42paris.fr/notion_service/pkg/controllers"
+)
+
+// post value to notion db
+func PostToNotionDB(DBid string, params notion.CreatePageParams) (*notion.Page, error) {
+	clientNotion := controllers.NotionClient()
+	ctx := context.Background()
+
+	page, err := clientNotion.CreatePage(ctx, params)
+	if err != nil {
+		log.Printf("Error: %s", err.Error())
+		return nil, err
+	}
+
+	return &page, nil
 }

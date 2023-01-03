@@ -30,6 +30,7 @@ func DBChangeChecker(DBList *[]models.ProcessDB, client *ent.Client) {
 		// Launch a goroutine
 		go func(DB *models.ProcessDB, channel chan Databases) {
 			// Decrement the counter when the goroutine completes.
+			// TODO iterate with cursor if page.DB.HasMore
 			page, err := methods.FetchNotionDB(DB.ID)
 			if err != nil {
 				return

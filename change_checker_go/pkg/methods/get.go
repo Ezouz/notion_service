@@ -4,9 +4,23 @@ import (
 	"context"
 	"log"
 
+	"github.com/dstotijn/go-notion"
 	"gitlab.42paris.fr/notion_service/internal/models"
 	"gitlab.42paris.fr/notion_service/pkg/controllers"
 )
+
+func FetchNotionPage(pageID string) (*notion.Page, error) {
+	clientNotion := controllers.NotionClient()
+
+	ctx := context.Background()
+
+	page, err := clientNotion.FindPageByID(ctx, pageID)
+	if err != nil {
+		log.Printf("Error: %s", err.Error())
+		return nil, err
+	}
+	return &page, err
+}
 
 func FetchNotionDB(DBid string) (*models.CompleteDB, error) {
 
