@@ -60,7 +60,6 @@ func DBChangeChecker(DBList *[]models.ProcessDB, client *ent.Client) {
 					log.Fatalf("failed fetching Status: %v", err)
 				}
 				statusList = DB
-
 			}
 		}
 	}
@@ -89,11 +88,4 @@ func DBChangeChecker(DBList *[]models.ProcessDB, client *ent.Client) {
 	// save new values if changed (database_id, property type)
 	// post email or discord message with change
 	defer client.Close()
-
 }
-
-// Set field value.
-// Avoid nil checks.
-// Add many edges.
-// Set unique edge.
-// Create and return.
