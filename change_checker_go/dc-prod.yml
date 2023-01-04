@@ -1,0 +1,18 @@
+version: "3.9"
+
+networks:
+  default:
+    external: true
+    name: notion_service
+
+services:
+  api:
+    command: --host 0.0.0.0 --port 8080
+    env_file:
+      - .env-prod
+    image: gitlab-registry.42paris.fr/utilities/notion_service:prod
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.entrypoints=api
+      - traefik.http.routers.api.rule=(Host(`notion-api.int.42paris.fr`) && Path(`/`)) 
+    restart: unless-stopped

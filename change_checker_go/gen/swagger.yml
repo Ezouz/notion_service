@@ -1,0 +1,91 @@
+info:
+  contact: {}
+  description: API notion 42
+  title: Notion API
+  version: "0.0.1"
+
+securityDefinitions:
+  key:
+    type: apiKey
+    name: x-token
+    in: header
+
+paths:
+  /checkhost:
+    post:
+      tags:
+        - clusters
+      security:
+        - key: []
+      consumes:
+        - "application/json"
+      parameters:
+      - description: Host in the cluster payload
+        in: body
+        name: ClusterHost
+        required: true
+        schema: 
+            $ref: "#/definitions/computorDef"
+      responses:
+        "204":
+          description: Successful
+        "400":
+          description: Bad request
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "401":
+          description: UnAuthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: Not found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "500":
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      summary: Check computor in inventory db with hostname
+
+schemes:
+  - http
+swagger: "2.0"
+definitions:
+  computorDef:
+    type: object
+    properties:
+      hostname:
+        type: string
+        example: "e1r1p1"
+      ip:
+        type: string
+        example: "10.0.0.0"
+      mac_address:
+        type: string
+        example: "e1:e1:e1:e1:e1:e1"
+      manufacturer:
+        type: string
+        example: "Apple Inc."
+      model:
+        type: string
+        example: "Apple 12"
+      serial:
+        type: string
+        example: "COUCOUJESUISUNSERIAL"
+      bios_date:
+        type: string
+        example: "2012"
+      last_redump:
+        type: string
+        example: "lun. 19 déc. 2022 15:42:10 CET"
+  principal:
+    type: string
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 404
+      message:
+        type: string
+        example: "This is an error message"

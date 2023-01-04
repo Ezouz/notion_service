@@ -1,0 +1,11 @@
+.vscode
+.env
+
+node_modules
+package-lock.json
+
+notion_service
+
+postgres-data
+redisdata
+tmp

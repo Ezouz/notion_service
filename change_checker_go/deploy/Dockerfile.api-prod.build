@@ -1,0 +1,26 @@
+
+# Stage 1 - build
+FROM golang:1.19.1-alpine AS builder
+WORKDIR /go/src/gitlab.42paris.fr/utilities/notion_service
+COPY ./ ./
+
+ARG GITLAB_ACCESS_TOKEN
+ENV GITLAB_ACCESS_TOKEN ${GITLAB_ACCESS_TOKEN}
+
+RUN apk update
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o api ./cmd/notion-server/main.go
+
+# Stage 2 - production
+FROM alpine:3.13
+WORKDIR /go/src/gitlab.42paris.fr/utilities/notion_service
+
+COPY --from=builder /go/src/gitlab.42paris.fr/utilities/notion_service/api /usr/local/bin/api
+COPY --from=builder /go/src/gitlab.42paris.fr/utilities/notion_service/.env .env
+
+RUN apk update
+RUN apk add tzdata
+
+ENV TZ Europe/Paris
+EXPOSE 7775
+ENTRYPOINT ["/go/src/gitlab.42paris.fr/utilities/notion_service/api"]
