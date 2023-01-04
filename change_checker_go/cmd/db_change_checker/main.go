@@ -8,9 +8,9 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/joho/godotenv"
 
-	"gitlab.42paris.fr/notion_service/internal/models"
-	"gitlab.42paris.fr/notion_service/internal/notion"
-	"gitlab.42paris.fr/notion_service/pkg/controllers"
+	"gitlab.42paris.fr/utilities/notion_service/internal/models"
+	"gitlab.42paris.fr/utilities/notion_service/internal/notion"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/controllers"
 )
 
 func main() {

@@ -25,7 +25,7 @@ import (
 	flags "github.com/jessevdk/go-flags"
 	"golang.org/x/net/netutil"
 
-	"gitlab.42paris.fr/notion_service/pkg/restapi/operations"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/restapi/operations"
 )
 
 const (

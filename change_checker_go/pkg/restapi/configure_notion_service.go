@@ -9,11 +9,11 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
-	apiHandler "gitlab.42paris.fr/notion_service/pkg/handlers"
-	"gitlab.42paris.fr/notion_service/pkg/utils"
+	apiHandler "gitlab.42paris.fr/utilities/notion_service/pkg/handlers"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/utils"
 
-	"gitlab.42paris.fr/notion_service/pkg/restapi/operations"
-	"gitlab.42paris.fr/notion_service/pkg/restapi/operations/clusters"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/restapi/operations"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/restapi/operations/clusters"
 )
 
 //go:generate swagger generate server --target ../../pkg --name NotionService --spec ../../gen/swagger.yml --principal interface{}

@@ -1,4 +1,4 @@
-module gitlab.42paris.fr/notion_service
+module gitlab.42paris.fr/utilities/notion_service
 
 go 1.19
 

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/go-openapi/errors"
-	"gitlab.42paris.fr/notion_service/pkg/models"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/models"
 )
 
 func ValidateHeader(bearerHeader string) (interface{}, error) {

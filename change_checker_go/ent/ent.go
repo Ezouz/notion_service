@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"gitlab.42paris.fr/notion_service/ent/database"
-	"gitlab.42paris.fr/notion_service/ent/status"
+	"gitlab.42paris.fr/utilities/notion_service/ent/database"
+	"gitlab.42paris.fr/utilities/notion_service/ent/status"
 )
 
 // ent aliases to avoid import conflicts in user's code.

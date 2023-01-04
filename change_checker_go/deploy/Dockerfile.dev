@@ -10,4 +10,4 @@ RUN chmod +x /wait
 
 RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s
 
-CMD air -c /go/src/gitlab.42paris.fr/notion_service/.air-api.toml
+CMD air -c /go/src/gitlab.42paris.fr/utilities/notion_service/.air-api.toml

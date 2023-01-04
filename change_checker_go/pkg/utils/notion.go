@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/dstotijn/go-notion"
-	"gitlab.42paris.fr/notion_service/pkg/methods"
-	"gitlab.42paris.fr/notion_service/pkg/models"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/methods"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/models"
 )
 
 func FindRowWithTitleInNotionDB(DBID string, title string, cursor *string) (*notion.Page, *models.ErrorResponse) {
@@ -148,7 +148,7 @@ func UpdateNotionRowProperties(row notion.DatabasePageProperties, values interfa
 					break pageloop
 				case "last_edited_by":
 				default:
-					log.Println("Inexistant type")
+					// log.Println("Inexistant type")
 				}
 			}
 		}
@@ -252,7 +252,7 @@ func FillNotionPropertyFromTemplate(page notion.DatabasePageProperties, values i
 					break pageloop
 				case "last_edited_by":
 				default:
-					log.Println("Inexistant type")
+					// log.Println("Inexistant type")
 				}
 			}
 		}
@@ -335,7 +335,7 @@ func DeleteEmptyPropertyValues(page notion.DatabasePageProperties) notion.Databa
 		case "last_edited_by":
 			delete(page, key)
 		default:
-			log.Println("Inexistant type")
+			// log.Println("Inexistant type")
 		}
 	}
 	return page

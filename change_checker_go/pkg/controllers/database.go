@@ -6,7 +6,7 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
-	"gitlab.42paris.fr/notion_service/ent"
+	"gitlab.42paris.fr/utilities/notion_service/ent"
 )
 
 type ConnString struct {

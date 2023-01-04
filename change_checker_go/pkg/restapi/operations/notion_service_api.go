@@ -19,7 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"gitlab.42paris.fr/notion_service/pkg/restapi/operations/clusters"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/restapi/operations/clusters"
 )
 
 // NewNotionServiceAPI creates a new NotionService instance

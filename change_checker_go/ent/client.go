@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 
-	"gitlab.42paris.fr/notion_service/ent/migrate"
+	"gitlab.42paris.fr/utilities/notion_service/ent/migrate"
 
-	"gitlab.42paris.fr/notion_service/ent/database"
-	"gitlab.42paris.fr/notion_service/ent/status"
+	"gitlab.42paris.fr/utilities/notion_service/ent/database"
+	"gitlab.42paris.fr/utilities/notion_service/ent/status"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

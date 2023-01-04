@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"gitlab.42paris.fr/notion_service/ent"
+	"gitlab.42paris.fr/utilities/notion_service/ent"
 )
 
 // The DatabaseFunc type is an adapter to allow the use of ordinary

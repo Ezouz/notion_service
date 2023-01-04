@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"gitlab.42paris.fr/notion_service/ent/database"
+	"gitlab.42paris.fr/utilities/notion_service/ent/database"
 )
 
 // Database is the model entity for the Database schema.

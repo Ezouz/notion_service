@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"gitlab.42paris.fr/notion_service/ent/status"
+	"gitlab.42paris.fr/utilities/notion_service/ent/status"
 )
 
 // Status is the model entity for the Status schema.

@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"gitlab.42paris.fr/notion_service/ent/database"
-	"gitlab.42paris.fr/notion_service/ent/status"
+	"gitlab.42paris.fr/utilities/notion_service/ent/database"
+	"gitlab.42paris.fr/utilities/notion_service/ent/status"
 )
 
 // DatabaseCreate is the builder for creating a Database entity.

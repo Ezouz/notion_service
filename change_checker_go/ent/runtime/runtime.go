@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in gitlab.42paris.fr/notion_service/ent/runtime.go
+// The schema-stitching logic is generated in gitlab.42paris.fr/utilities/notion_service/ent/runtime.go
 
 const (
 	Version = "v0.11.4"                                         // Version of ent codegen.

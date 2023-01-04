@@ -5,9 +5,9 @@ import (
 	"log"
 	"sync"
 
-	"gitlab.42paris.fr/notion_service/ent"
-	"gitlab.42paris.fr/notion_service/internal/models"
-	"gitlab.42paris.fr/notion_service/pkg/methods"
+	"gitlab.42paris.fr/utilities/notion_service/ent"
+	"gitlab.42paris.fr/utilities/notion_service/internal/models"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/methods"
 )
 
 type Databases struct {

@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/dstotijn/go-notion"
-	"gitlab.42paris.fr/notion_service/internal/models"
-	"gitlab.42paris.fr/notion_service/pkg/controllers"
+	"gitlab.42paris.fr/utilities/notion_service/internal/models"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/controllers"
 )
 
 func FetchNotionPage(pageID string) (*notion.Page, error) {

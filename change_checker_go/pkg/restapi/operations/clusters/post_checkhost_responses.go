@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"gitlab.42paris.fr/notion_service/pkg/models"
+	"gitlab.42paris.fr/utilities/notion_service/pkg/models"
 )
 
 // PostCheckhostNoContentCode is the HTTP code returned for type PostCheckhostNoContent

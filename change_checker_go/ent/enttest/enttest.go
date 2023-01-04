@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"gitlab.42paris.fr/notion_service/ent"
+	"gitlab.42paris.fr/utilities/notion_service/ent"
 	// required by schema hooks.
-	_ "gitlab.42paris.fr/notion_service/ent/runtime"
+	_ "gitlab.42paris.fr/utilities/notion_service/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"gitlab.42paris.fr/notion_service/ent/migrate"
+	"gitlab.42paris.fr/utilities/notion_service/ent/migrate"
 )
 
 type (
