@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"reflect"
 
 	"github.com/dstotijn/go-notion"
 	"github.com/go-openapi/runtime/middleware"
@@ -18,15 +18,14 @@ type ClustersCheckhost struct {
 }
 
 func (h *ClustersCheckhost) Handle(compDef clusters.PostCheckhostParams, token interface{}) middleware.Responder {
-	// log.Printf("Interface ---------------------- %v", token)
-	log.Printf("Hostname ---------------------- %v", compDef.ClusterHost.Hostname)
-	log.Printf("IP ---------------------- %v", compDef.ClusterHost.IP)
-	log.Printf("MacAddress ---------------------- %v", compDef.ClusterHost.MacAddress)
-	log.Printf("Manufacturer ---------------------- %v", compDef.ClusterHost.Manufacturer)
-	log.Printf("Model ---------------------- %v", compDef.ClusterHost.Model)
-	log.Printf("Serial ---------------------- %v", compDef.ClusterHost.Serial)
-	log.Printf("BiosDate ---------------------- %v", compDef.ClusterHost.BiosDate)
-	log.Printf("LastRedump ---------------------- %v", compDef.ClusterHost.LastRedump)
+	// log.Printf("Hostname ---------------------- %v", compDef.ClusterHost.Hostname)
+	// log.Printf("IP ---------------------- %v", compDef.ClusterHost.IP)
+	// log.Printf("MacAddress ---------------------- %v", compDef.ClusterHost.MacAddress)
+	// log.Printf("Manufacturer ---------------------- %v", compDef.ClusterHost.Manufacturer)
+	// log.Printf("Model ---------------------- %v", compDef.ClusterHost.Model)
+	// log.Printf("Serial ---------------------- %v", compDef.ClusterHost.Serial)
+	// log.Printf("BiosDate ---------------------- %v", compDef.ClusterHost.BiosDate)
+	// log.Printf("LastRedump ---------------------- %v", compDef.ClusterHost.LastRedump)
 
 	// getNotionDB & Check if Hostname is here
 	row, err := utils.FindRowWithTitleInNotionDB(os.Getenv("DB_CLUSTER"), compDef.ClusterHost.Hostname, nil)
@@ -35,14 +34,39 @@ func (h *ClustersCheckhost) Handle(compDef clusters.PostCheckhostParams, token i
 			Payload: err,
 		}
 	}
+
 	if row != nil {
 		// Update row if exists
-		// https://developers.notion.com/reference/patch-page
-		log.Printf("ROW ---------------------- %s /// %v", reflect.ValueOf(row), err)
+		props, ok := row.Properties.(notion.DatabasePageProperties)
+		if ok == false {
+			log.Print("String Error")
+		}
+		dbProps, err := utils.UpdateNotionRowProperties(props, compDef.ClusterHost)
+		if err != nil {
+			return &clusters.PostCheckhostBadRequest{
+				Payload: &models.ErrorResponse{
+					Code:    404,
+					Message: "Bad Request",
+				},
+			}
+		}
+
+		params := notion.UpdatePageParams{
+			DatabasePageProperties: dbProps,
+		}
+
+		_, err = methods.UpdateNotionPage(row.ID, params)
+		if err != nil {
+			return &clusters.PostCheckhostBadRequest{
+				Payload: &models.ErrorResponse{
+					Code:    404,
+					Message: fmt.Sprintf("Couldn't update Notion Page: %s", err),
+				},
+			}
+		}
 
 	} else {
 		// or create new row // post page
-		log.Printf("ROW Does not exists")
 		// get template
 		template, err := methods.FetchNotionPage(os.Getenv("DB_CLUSTER_TEMPLATE"))
 		if err != nil {
@@ -60,7 +84,12 @@ func (h *ClustersCheckhost) Handle(compDef clusters.PostCheckhostParams, token i
 		// fill template properties
 		dbProps, err := utils.FillNotionPropertyFromTemplate(props, compDef.ClusterHost)
 		if err != nil {
-			log.Print("Props Error")
+			return &clusters.PostCheckhostBadRequest{
+				Payload: &models.ErrorResponse{
+					Code:    404,
+					Message: "Bad Request",
+				},
+			}
 		}
 
 		params := notion.CreatePageParams{

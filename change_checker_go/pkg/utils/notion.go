@@ -32,7 +32,6 @@ func FindRowWithTitleInNotionDB(DBID string, title string, cursor *string) (*not
 		// if Hostname exists return row
 		for key, value := range themap {
 			if key == "hostname" && (title == value.Title[0].PlainText) {
-				log.Println((key == "hostname"), (title == value.Title[0].PlainText))
 				return &single, nil
 			}
 		}
@@ -49,6 +48,114 @@ func FindRowWithTitleInNotionDB(DBID string, title string, cursor *string) (*not
 	return nil, nil
 }
 
+func UpdateNotionDatabaseProperties(row *notion.Page, values interface{}) {}
+
+func UpdateNotionRowProperties(row notion.DatabasePageProperties, values interface{}) (notion.DatabasePageProperties, error) {
+	p, _ := json.Marshal(values) // encode to JSON
+	var m map[string]interface{}
+	json.Unmarshal(p, &m) // decode to map
+
+	page := make(map[string]notion.DatabasePageProperty)
+
+	for newkey, newvalue := range m {
+	pageloop:
+		for key, value := range row {
+			if key == newkey {
+				// modify value
+				switch value.Type {
+				case "title":
+					value.Title[0].Text = &notion.Text{
+						Content: newvalue.(string),
+					}
+					page[key] = value
+					break pageloop
+				case "select":
+					value.ID = ""
+					value.Select = &notion.SelectOptions{
+						Name: newvalue.(string),
+					}
+					page[key] = value
+					break pageloop
+				case "rich_text":
+					if len(value.RichText) > 0 {
+						value.RichText[0] = notion.RichText{
+							Type:      notion.RichTextTypeText,
+							PlainText: newvalue.(string),
+							Text: &notion.Text{
+								Content: newvalue.(string),
+							},
+						}
+					} else {
+						value.RichText = append(value.RichText, notion.RichText{
+							Type:      notion.RichTextTypeText,
+							PlainText: newvalue.(string),
+							Text: &notion.Text{
+								Content: newvalue.(string),
+							},
+						})
+					}
+					page[key] = value
+					break pageloop
+				case "date":
+					y, err := strconv.Atoi(newvalue.(string)[0:4])
+					m, err := strconv.Atoi(newvalue.(string)[5:7])
+					d, err := strconv.Atoi(newvalue.(string)[8:10])
+					th, err := strconv.Atoi(newvalue.(string)[11:13])
+					tm, err := strconv.Atoi(newvalue.(string)[14:16])
+					ts, err := strconv.Atoi(newvalue.(string)[17:19])
+					if err != nil {
+						// i know...
+						log.Println(err)
+					}
+					ti := time.Date(
+						y,
+						time.Month(m),
+						d,
+						th, tm, ts, 0, time.UTC,
+					)
+					value.Date.Start.Time = ti
+					page[key] = value
+					break pageloop
+				case "number":
+					break pageloop
+				case "multi_select":
+					break pageloop
+				case "people":
+					break pageloop
+				case "files":
+					break pageloop
+				case "checkbox":
+					break pageloop
+				case "url":
+					break pageloop
+				case "email":
+					break pageloop
+				case "phone_number":
+					break pageloop
+				case "status":
+					break pageloop
+				case "formula":
+					break pageloop
+				case "relation":
+					break pageloop
+				case "rollup":
+					break pageloop
+				case "created_time":
+					break pageloop
+				case "created_by":
+					break pageloop
+				case "last_edited_time":
+					break pageloop
+				case "last_edited_by":
+				default:
+					log.Println("Inexistant type")
+				}
+			}
+		}
+	}
+	return page, nil
+}
+
 func FillNotionPropertyFromTemplate(page notion.DatabasePageProperties, values interface{}) (notion.DatabasePageProperties, error) {
 	p, _ := json.Marshal(values) // encode to JSON
 	var m map[string]interface{}
@@ -61,18 +168,12 @@ func FillNotionPropertyFromTemplate(page notion.DatabasePageProperties, values i
 			//iterate in page properties
 			// if propertie key = value key to set
 			if key == newkey {
-				// modify value value
+				// modify value
 				switch value.Type {
 				case "title":
 					value.Title[0].Text = &notion.Text{
 						Content: newvalue.(string),
 					}
-					// value.Title = append(value.Title, notion.RichText{
-					// 	Text: &notion.Text{
-					// 		Content: newvalue.(string),
-					// 	},
-					// 	Type: notion.RichTextTypeText,
-					// })
 					break pageloop
 				case "select":
 					value.ID = ""
@@ -111,14 +212,12 @@ func FillNotionPropertyFromTemplate(page notion.DatabasePageProperties, values i
 						// i know...
 						log.Println(err)
 					}
-
 					ti := time.Date(
 						y,
 						time.Month(m),
 						d,
 						th, tm, ts, 0, time.UTC,
 					)
-
 					value.Date.Start.Time = ti
 					break pageloop
 				case "number":
