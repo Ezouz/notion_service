@@ -16,7 +16,7 @@ DOCKER_PROD := $(DOCKER) --host $(PROD_SSH)
 DC_PROD := $(DC) --host $(PROD_SSH) --file $(PROD_DC)
 
 REGISTRY=gitlab-registry.42paris.fr
-PROD_API_IMAGE := $(REGISTRY)/$(NAME):prod
+PROD_API_IMAGE := $(REGISTRY)/utilities/$(NAME):prod
 
 all: up logs
 reload: down all
@@ -97,6 +97,7 @@ prod.build:
 	$(DOCKER) build --build-arg GITLAB_ACCESS_TOKEN=$(GITLAB_ACCESS_TOKEN) --file ./deploy/Dockerfile.api-prod.build --tag $(PROD_API_IMAGE) .
 	$(DOCKER) push $(PROD_API_IMAGE)
 prod.up:
+	scp ./traefik.yml $(PROD_USER)@$(PROD_HOST):~/
 	$(DOCKER_PROD) login --password $(GITLAB_ACCESS_TOKEN) --username $(GITLAB_USERNAME) $(REGISTRY)
 	$(DC_PROD) pull
 	$(DC_PROD) up --detach

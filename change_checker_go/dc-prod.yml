@@ -6,13 +6,45 @@ networks:
     name: notion_service
 
 services:
+  reverse-proxy:
+    image: traefik:2.5
+    command:
+      # Docker swarm configuration
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/etc/traefik/dynamic_conf
+      # Configure entrypoint
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # Global HTTP -> HTTPS
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      # Enable dashboard
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --api.debug=true
+    labels:
+      # Enable dashboard on http://${SERVICE_URL}:8080/dashboard/
+      traefik.http.routers.reverse-proxy.service: 'api@internal'
+      traefik.http.routers.reverse-proxy.middlewares: 'auth-admin'
+      traefik.http.middlewares.auth-admin.basicauth.users: 'admin:toto'
+      traefik.http.services.api.loadbalancer.server.port: ${API_PORT}
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/ssl/ansible:/etc/ssl/ansible:ro
+      - /home/zouz/traefik.yml:/etc/traefik/dynamic_conf/conf.yml:ro
   api:
-    command: --host 0.0.0.0 --port 8080
+    command: --host 0.0.0.0 --port ${API_PORT}
     env_file:
-      - .env-prod
+      - .env
     image: gitlab-registry.42paris.fr/utilities/notion_service:prod
     labels:
       - traefik.enable=true
-      - traefik.http.routers.api.entrypoints=api
-      - traefik.http.routers.api.rule=(Host(`notion-api.int.42paris.fr`) && Path(`/`)) 
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.tls=true
+      - traefik.http.routers.api.rule=Host(`${SERVICE_URL}`)
     restart: unless-stopped
+

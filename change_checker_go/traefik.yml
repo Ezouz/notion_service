@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /etc/ssl/ansible/*.int.42paris.fr.pem
+      keyFile: /etc/ssl/ansible/*.int.42paris.fr.key
