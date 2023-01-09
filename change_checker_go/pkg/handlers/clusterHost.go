@@ -26,6 +26,7 @@ func (h *ClustersCheckhost) Handle(compDef clusters.PostCheckhostParams, token i
 	// log.Printf("Serial ---------------------- %v", compDef.ClusterHost.Serial)
 	// log.Printf("BiosDate ---------------------- %v", compDef.ClusterHost.BiosDate)
 	// log.Printf("LastRedump ---------------------- %v", compDef.ClusterHost.LastRedump)
+	// log.Printf("Down ---------------------- %v", compDef.ClusterHost.Down)
 
 	// getNotionDB & Check if Hostname is here
 	row, err := utils.FindRowWithTitleInNotionDB(os.Getenv("DB_CLUSTER"), compDef.ClusterHost.Hostname, nil)

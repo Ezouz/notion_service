@@ -75,6 +75,9 @@ definitions:
       bios_date:
         type: string
         example: "2012"
+      down:
+        type: string
+        example: "false"
       last_redump:
         type: string
         example: "lun. 19 déc. 2022 15:42:10 CET"

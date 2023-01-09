@@ -25,6 +25,7 @@ type ClusterRow struct {
 	Mousepad      string
 	Redump        string
 	LastRedump    string
+	Down          string
 	Comment       string
 	LastEditTime  string
 	LastEditBy    string

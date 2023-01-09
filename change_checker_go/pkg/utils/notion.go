@@ -116,6 +116,15 @@ func UpdateNotionRowProperties(row notion.DatabasePageProperties, values interfa
 					value.Date.Start.Time = ti
 					page[key] = value
 					break pageloop
+				case "checkbox":
+					tmp, err := strconv.ParseBool(newvalue.(string))
+					if err != nil {
+						// i know...
+						log.Println(err)
+					}
+					value.Checkbox = notion.BoolPtr(tmp)
+					page[key] = value
+					break pageloop
 				case "number":
 					break pageloop
 				case "multi_select":
@@ -124,8 +133,7 @@ func UpdateNotionRowProperties(row notion.DatabasePageProperties, values interfa
 					break pageloop
 				case "files":
 					break pageloop
-				case "checkbox":
-					break pageloop
+
 				case "url":
 					break pageloop
 				case "email":

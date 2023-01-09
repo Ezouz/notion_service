@@ -107,6 +107,10 @@ func init() {
           "type": "string",
           "example": "2012"
         },
+        "down": {
+          "type": "string",
+          "example": "false"
+        },
         "hostname": {
           "type": "string",
           "example": "e1r1p1"
@@ -238,6 +242,10 @@ func init() {
         "bios_date": {
           "type": "string",
           "example": "2012"
+        },
+        "down": {
+          "type": "string",
+          "example": "false"
         },
         "hostname": {
           "type": "string",

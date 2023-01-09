@@ -21,6 +21,10 @@ type ComputorDef struct {
 	// Example: 2012
 	BiosDate string `json:"bios_date,omitempty"`
 
+	// down
+	// Example: false
+	Down string `json:"down,omitempty"`
+
 	// hostname
 	// Example: e1r1p1
 	Hostname string `json:"hostname,omitempty"`
